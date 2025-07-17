@@ -251,3 +251,26 @@ SELECT
 FROM p
 GROUP BY p.PatientTariffGroup
 ORDER BY p.PatientTariffGroup;
+
+-- Temp Table
+
+    drop table if exists #TempPatientStay;
+ 
+SELECT
+    ps.PatientId
+    ,ps.AdmittedDate
+    ,ps.Tariff  
+    ,CASE WHEN ps.Tariff >= 7 THEN 'High Tariff'
+        WHEN ps.Tariff >= 4 THEN 'Medium Tariff'
+        ELSE 'Low Tariff'
+    END AS TariffGroup
+INTO #TempPatientStay
+FROM
+    dbo.PatientStay ps
+ 
+SELECT
+    p.TariffGroup
+    ,COUNT(*) AS NumberOfPatients
+FROM #TempPatientStay AS p
+GROUP BY p.TariffGroup
+ORDER BY p.TariffGroup;
